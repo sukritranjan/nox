@@ -1,0 +1,16 @@
+This repository holds the code used in CITATION HERE
+
+
+If making use of this code or the generated auxiliary files, please cite the descriptor paper:
+CITATION
+
+Questions and feedback welcome! Please send any comments or questions to: Sukrit Ranjan, sukrit@mit.edu
+
+==========================
+===HOW TO USE
+==========================
+To check the single-reaction calculations outlined in Section 2.1, run single_eqn_thermo.py
+
+To produce Figures 1 and 2, ((Zoe, what needs to be done to turn the .txt files into usable code?))
+To produce Figures 3 and 4, run dynamiccalc_v3.py
+To produce Figure A1, ((Paul, is your code public? If so, could we either share it here or link it?))

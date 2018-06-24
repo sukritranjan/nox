@@ -1,0 +1,374 @@
+# 2_DEGASSING_PARTITIONING_INDEPENDENTLY
+
+#To calculate the percentage of each species that partitions into the gaseous phase; assumed decoupled from aqueous system (which should be okay)
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib import cm
+import math
+from scipy.optimize import fsolve
+
+
+pKaHNO3=-1.3
+pKaHNO2=3.4
+pKaNH4=9.3
+
+KaHNO3=10.**(-1.*pKaHNO3)
+KaHNO2=10.**(-1.*pKaHNO2)
+KaNH4=10.**(-1.*pKaNH4)
+
+kh_HNO3=2.4E6
+kh_HNO2=50.
+kh_NO=.0019
+kh_N2O=.025
+kh_N2=.0006
+kh_NH3=60.
+
+V0=1.4E21  #volume of ocean in L
+
+R=.0821  #Latm/molK
+T=287 #K, avg
+V=3.9E21  #volume of atm
+RTV=R*T/V  
+
+
+#### FRACTIONATION FOR EACH SPECIES CONSIDERED:
+
+pH=np.array([4,6,8,10])
+Harr=10.**(-1.*pH)
+OHarr=10.**(-14.)/Harr
+
+###  NO3
+
+for j in np.arange(len(Harr)):
+    H=Harr[j]
+    OH=1.0E-14/H
+    logH=np.log10(H)
+
+    
+    def equations(p):
+        
+        
+        NO3,HNO3,PHNO3 = p
+        
+        f1=KaHNO3*HNO3-(H*NO3)
+        f2=HNO3-PHNO3*kh_HNO3
+        f3=(HNO3+NO3)*V0 + (PHNO3/RTV) - 1.0
+
+        
+
+
+
+        return (f1,f2,f3)
+
+
+    NO3,HNO3,PHNO3=fsolve(equations, (1,.1,.1),xtol=1.0E-3)
+
+    #print('pH = ')
+    #print(pH[j])
+    
+    #in moles now
+    NO3=NO3*V0
+    HNO3=HNO3*V0
+    PHNO3=PHNO3/RTV
+   
+    #print(NO3,HNO3,PHNO3)
+    
+pH4_NO3=np.array([0.99999498816649501, 5.0118332581045096e-06, 2.4688624493764307e-13])
+pH6_NO3=np.array([0.99999994989215724, 5.0107840313667659e-08, 2.4683476601377986e-15])
+pH8_NO3=np.array([0.9999999994770663, 5.2293374260991002e-10, 2.5755879728799871e-17])
+pH10_NO3=np.array([0.99999999999868483, 1.3151144637593724e-12, 6.5494757160727766e-20])
+
+NO3=np.array([0.99999498816649501,0.99999994989215724,0.9999999994770663,0.99999999999868483])
+HNO3=np.array([5.0118332581045096e-06,5.0107840313667659e-08,5.2293374260991002e-10,1.3151144637593724e-12])
+PHNO3=np.array([2.4688624493764307e-13,2.4683476601377986e-15,2.5755879728799871e-17,6.5494757160727766e-20])
+
+
+
+###  NO2
+
+for j in np.arange(len(Harr)):
+    H=Harr[j]
+    OH=1.0E-14/H
+    logH=np.log10(H)
+
+    
+    def equations(p):
+        
+        
+        NO2,HNO2,PHNO2 = p
+        
+        f1=KaHNO2*HNO2-(H*NO2)
+        f2=HNO2-PHNO2*kh_HNO2
+        f3=(HNO2+NO2)*V0 + (PHNO2/RTV) - 1.0
+
+        
+
+
+
+        return (f1,f2,f3)
+
+
+    NO2,HNO2,PHNO2=fsolve(equations, (1,.1,.1),xtol=1.0E-3)
+
+    #print('pH = ')
+    #print(pH[j])
+    
+    #in moles now
+    NO2=NO2*V0
+    HNO2=HNO2*V0
+    PHNO2=PHNO2/RTV
+   
+    #print(NO2,HNO2,PHNO2)
+    
+
+pH4_NO2=np.array([0.79886077232127128, 0.20066475347128701, 0.00047447420744167648])
+pH6_NO2=np.array([0.99748849772615211, 0.0025055778051868865, 5.9244686609579909e-06])
+pH8_NO2=np.array([0.99997482237698254, 2.5118230660910205e-05, 5.9392356549940026e-08])
+pH10_NO2=np.array([0.99999974822211724, 2.5118395516715439e-07, 5.939274635318784e-10])
+    
+NO2=np.array([0.79886077232127128,0.99748849772615211,0.99997482237698254,0.99999974822211724])
+HNO2=np.array([0.20066475347128701,0.0025055778051868865,2.5118230660910205e-05,2.5118395516715439e-07])
+PHNO2=np.array([0.00047447420744167648,5.9244686609579909e-06,5.9392356549940026e-08,5.939274635318784e-10])
+
+                    
+
+
+###  NO
+
+for j in np.arange(len(Harr)):
+    H=Harr[j]
+    OH=1.0E-14/H
+    logH=np.log10(H)
+
+    
+    def equations(p):
+        
+        
+        NO,PNO = p
+        
+        f2=NO-PNO*kh_NO
+        f3=(NO)*V0 + (PNO/RTV) - 1.0
+
+        return (f2,f3)
+
+
+    NO,PNO=fsolve(equations, (.1,1),xtol=1.0E-3)
+
+    #print('pH = ')
+    #print(pH[j])
+    
+    #in moles now
+    NO=NO*V0
+    PNO=PNO/RTV
+   
+    #print(NO,PNO)
+
+pH4_NO=np.array([0.015816778770527545, 0.98418322122947244])
+pH6_NO=np.array([0.015816778770527545, 0.98418322122947244])
+pH8_NO=np.array([0.015816778770527545, 0.98418322122947244])
+pH10_NO=np.array([0.015816778770527545, 0.98418322122947244])
+
+NO=np.array([0.015816778770527545,0.015816778770527545,0.015816778770527545,0.015816778770527545])
+PNO=np.array([0.98418322122947244,0.98418322122947244,0.98418322122947244,0.98418322122947244])
+
+###  N2O
+
+for j in np.arange(len(Harr)):
+    H=Harr[j]
+    OH=1.0E-14/H
+    logH=np.log10(H)
+
+    
+    def equations(p):
+        
+        
+        N2O,PN2O = p
+        
+        f2=N2O-PN2O*kh_N2O
+        f3=(N2O)*V0 + (PN2O/RTV) - 1.0
+
+        return (f2,f3)
+
+
+    N2O,PN2O=fsolve(equations, (.1,1),xtol=1.0E-3)
+
+    #print('pH = ')
+    #print(pH[j])
+    
+    #in moles now
+    N2O=N2O*V0
+    PN2O=PN2O/RTV
+   
+    #print(N2O,PN2O)
+
+
+pH4_N2O=np.array([0.17454983339958768, 0.82545016660041237])
+pH6_N2O=np.array([0.17454983339958768, 0.82545016660041237])
+pH8_N2O=np.array([0.17454983339958768, 0.82545016660041237])
+pH10_N2O=np.array([0.17454983339958768, 0.82545016660041237])
+
+N2O=np.array([0.17454983339958768,0.17454983339958768,0.17454983339958768,0.17454983339958768])
+PN2O=np.array([0.82545016660041237,0.82545016660041237,0.82545016660041237,0.82545016660041237])
+
+
+
+###  N2
+
+for j in np.arange(len(Harr)):
+    H=Harr[j]
+    OH=1.0E-14/H
+    logH=np.log10(H)
+
+    
+    def equations(p):
+        
+        
+        N2,PN2 = p
+        
+        f2=N2-PN2*kh_N2
+        f3=(N2)*V0 + (PN2/RTV) - 1.0
+
+        return (f2,f3)
+
+
+    N2,PN2=fsolve(equations, (.1,1),xtol=1.0E-3)
+
+    #print('pH = ')
+    #print(pH[j])
+    
+    #in moles now
+    N2=N2*V0
+    PN2=PN2/RTV
+   
+    #print(N2,PN2)
+
+pH4_N2=np.array([0.0050494170690318719, 0.99495058293096805])
+pH6_N2=np.array([0.0050494170690318719, 0.99495058293096805])
+pH8_N2=np.array([0.0050494170690318719, 0.99495058293096805])
+pH10_N2=np.array([0.0050494170690318719, 0.99495058293096805])
+
+N2=np.array([0.0050494170690318719,0.0050494170690318719,0.0050494170690318719,0.0050494170690318719])
+PN2=np.array([0.99495058293096805,0.99495058293096805,0.99495058293096805,0.99495058293096805])
+
+
+
+###  NH4
+
+for j in np.arange(len(Harr)):
+    H=Harr[j]
+    OH=1.0E-14/H
+    logH=np.log10(H)
+
+    
+    def equations(p):
+        
+        
+        NH4,NH3,PNH3 = p
+        
+        f1=KaNH4*NH4-(H*NH3)
+        f2=NH3-PNH3*kh_NH3
+        f3=(NH4+NH3)*V0 + (PNH3/RTV) - 1.0
+
+        
+
+
+
+        return (f1,f2,f3)
+
+
+    NH4,NH3,PNH3=fsolve(equations, (1,.1,.1),xtol=1.0E-3)
+
+    print('pH = ')
+    print(pH[j])
+    
+    #in moles now
+    NH3=NH3*V0
+    NH4=NH4*V0
+    PNH3=PNH3/RTV
+   
+    print(NH4,NH3,PNH3)
+    
+    
+
+pH4_NH4=np.array([0.99999497827149608, 5.0118530152833069e-06, 9.8754886201346227e-09])
+pH6_NH4=np.array([0.9994980772824229, 0.00050093566061428668, 9.870569629095499e-07])
+pH8_NH4=np.array([0.95218373371285692, 0.047722233128399301, 9.403315874381223e-05])
+pH10_NH4=np.array([0.16606474112781561, 0.83229528208878856, 0.0016399767833958894])
+
+NH4=np.array([0.99999497827149608,0.9994980772824229,0.95218373371285692,0.16606474112781561])
+NH3=np.array([5.0118530152833069e-06,0.00050093566061428668,0.047722233128399301,0.83229528208878856])
+PNH3=np.array([9.8754886201346227e-09,9.870569629095499e-07,9.403315874381223e-05,0.0016399767833958894])
+
+
+
+#### BAR CHART ATTEMPT
+width=1
+pH=np.array([4,6,8,10])
+
+fig=plt.figure()
+
+ax1=fig.add_subplot(321)
+ax1.bar(pH-.5,NO3,width,color=cm.plasma(0.05),label='NO$_3$')
+ax1.bar(pH-.5,HNO3,width,color=cm.plasma(0.1),bottom=NO3,label='HNO$_3$',alpha=.7)
+ax1.bar(pH-.5,PHNO3,width,color=cm.plasma(0.1),bottom=NO3+HNO3,hatch='/',alpha=.5,label='P$_{HNO3}$')
+ax1.legend(loc='best')
+ax1.set_xticks([])
+ax1.set_ylim(0,1)
+ax1.set_yticks([0,.2,.4,.6,.8,1])
+
+ax2=fig.add_subplot(322,sharey=ax1)
+ax2.bar(pH-.5,NO2,width,color=cm.plasma(0.2),label='NO$_2$')
+ax2.bar(pH-.5,HNO2,width,color=cm.plasma(0.25),bottom=NO2,label='HNO$_2$',alpha=.7)
+ax2.bar(pH-.5,PHNO2,width,color=cm.plasma(0.25),bottom=NO2+HNO2,hatch='/',alpha=.5,label='P$_{HNO2}$')
+ax2.legend(loc='best')
+ax2.set_xticks([])
+#ax2.set_yticks([])
+ax2.set_ylim(0,1)
+
+ax3=fig.add_subplot(323,sharex=ax1)
+ax3.bar(pH-.5,NO,width,color=cm.plasma(0.35),label='NO')
+ax3.bar(pH-.5,PNO,width,color=cm.plasma(0.35),bottom=NO,hatch='/',alpha=.5,label='P$_{NO}$')
+ax3.legend(loc='best')
+ax3.set_xticks([])
+ax3.set_ylim(0,1)
+#ax3.set_xlabel('pH',fontsize=16)
+ax3.set_yticks([0,.2,.4,.6,.8,1])
+ax3.text(2,.9,'Species Fraction',rotation=90,fontsize=16)
+
+ax4=fig.add_subplot(324,sharey=ax3,sharex=ax2)
+ax4.bar(pH-.5,N2O,width,color=cm.plasma(0.5),label='N$_2$O')
+ax4.bar(pH-.5,PN2O,width,color=cm.plasma(0.5),bottom=N2O,hatch='/',alpha=.5,label='P$_{N2O}$')
+ax4.legend(loc='best')
+ax4.set_xticks([])
+#ax4.set_yticks([])
+ax4.set_ylim(0,1)
+
+ax5=fig.add_subplot(325,sharex=ax1)
+ax5.bar(pH-.5,N2,width,color=cm.plasma(0.65),label='N$_2$')
+ax5.bar(pH-.5,PN2,width,color=cm.plasma(0.65),bottom=N2,hatch='/',alpha=.5,label='P$_{N2}$')
+ax5.legend(loc='best')
+ax5.set_xticks([4,6,8,10])
+ax5.set_ylim(0,1)
+ax5.set_xlabel('pH',fontsize=16)
+ax5.set_yticks([0,.2,.4,.6,.8,1])
+
+
+ax6=fig.add_subplot(326,sharey=ax5,sharex=ax2)
+ax6.bar(pH-.5,NH4,width,color=cm.plasma(0.8),label='NH$_4$')
+ax6.bar(pH-.5,NH3,width,color=cm.plasma(0.85),bottom=NH4,label='NH$_3$',alpha=.7)
+ax6.bar(pH-.5,PNH3,width,color=cm.plasma(0.85),bottom=NH4+NH3,hatch='/',alpha=.5,label='P$_{NH3}$')
+ax6.legend(loc='best')
+ax6.set_xticks([4,6,8,10])
+ax6.set_ylim(0,1)
+ax6.set_xlabel('pH',fontsize=16)
+#ax6.set_yticks([])
+
+
+
+plt.show()
+plt.close()
+
+
+
+

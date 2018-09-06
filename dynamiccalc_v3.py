@@ -302,8 +302,8 @@ label_list=np.array(['NO3- + 1uM Fe(II)-->N2O', 'NO3- + 10uM Fe(II)-->N2O', 'NO3
 ax0.set_title('NO2-')
 ax0.plot(conc_no2m_range, conc_no2m_range*0.+nox_input_high, color='black', linestyle='-', label='NOx Prod. (1 bar CO2)')
 ax0.plot(conc_no2m_range, conc_no2m_range*0.+nox_input_low, color='black', linestyle='--', label='NOx Prod. (0.1 bar CO2)')
-ax0.plot(conc_no2m_range, conc_no2m_range*0.+nox_input_high*lake_catchement_ratio, color='hotpink', linestyle='-', label='NOx Prod. (1 bar CO2, CA/SA=100)')
-ax0.plot(conc_no2m_range, conc_no2m_range*0.+nox_input_low*lake_catchement_ratio, color='hotpink', linestyle='--', label='NOx Prod. (0.1 bar CO2, CA/SA=100)')
+ax0.plot(conc_no2m_range, conc_no2m_range*0.+nox_input_high*lake_catchement_ratio, color='hotpink', linestyle='-', label='NOx Prod. \n(1 bar CO2, CA/SA=100)')
+ax0.plot(conc_no2m_range, conc_no2m_range*0.+nox_input_low*lake_catchement_ratio, color='hotpink', linestyle='--', label='NOx Prod. \n(0.1 bar CO2, CA/SA=100)')
 ###ax0.axvline(6.6e-6, color='black', linestyle=':', label='[HCO3-]')
 
 ax0.plot(conc_no2m_range, loss_rates_no2m[0, :, 0], color=colors[0], linestyle='-', label='Photoreduction')
@@ -336,7 +336,7 @@ ax1.set_xscale('log')
 ax1.set_xlabel('[NO3-] (M)')
 
 ax0.legend(bbox_to_anchor=[-0.09, 1.08, 1.09, .152],loc='lower left', ncol=3, mode='expand', borderaxespad=0., fontsize=12)
-plt.tight_layout(rect=(0,0,1,0.9))
+plt.tight_layout(rect=(0,0,1,0.85))
 plt.subplots_adjust(wspace=0., hspace=0.2)
 
 plt.savefig('./Plots/important_rxns_lake_focused_v3.pdf', orientation='portrait',papertype='letter', format='pdf')

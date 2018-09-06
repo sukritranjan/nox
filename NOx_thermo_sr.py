@@ -208,8 +208,7 @@ for i in np.arange(0, len(H2arr)):
 		print 10.**solution
 		print  residual #check on solution quality...should be 0 to 1.0E-3 at least
 		print ''
-	pdb.set_trace()
-	x=1+1
+
 
 
 
@@ -262,7 +261,6 @@ width=0.2
 for i in np.arange(0, len(H2arr)):
 	H2=H2arr[i]
 	ax[i].set_title('[H2]=' + str(H2))
-	pdb.set_trace
 	ax[i].bar(pHarr, N_oxidation_norm[i,:,0], color='violet', label='N(+5)')
 	ax[i].bar(pHarr, N_oxidation_norm[i,:,1], color='blue', label='N(+3)', bottom=N_oxidation_norm[i,:,0])
 	ax[i].bar(pHarr, N_oxidation_norm[i,:,2], color='green', label='N(+2)', bottom=N_oxidation_norm[i,:,1]+N_oxidation_norm[i,:,0])

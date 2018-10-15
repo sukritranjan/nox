@@ -38,21 +38,96 @@ mu=28.0*amu  #mean molecular mass of N2-dominated atmosphere, amu --> kg
 ###Chemical parameters
 ###############
 #Redox reactions eq. constants
+
+#ORIGINAL
 logK4=222.3
 logK8=160.8
-logK12=162.1  #ocrrected for aqueous dG
-logK14=101.6  #corrected for aqueous dG
+logK12=162.1
+logK14=101.6
 logK15=40.4
 
-#Henry's law constants in M/bar
-H_HNO3=2.6E6
+#T=2 deg C
+#logK4=222.91
+#logK8=161.16
+#logK12=162.60
+#logK14=101.71
+#logK15=40.40
+#H_NH3=195.2
+#H_N2=.00100319
+#H_N2O=.0510684
+#H_NO=0.00309323        #from site.colorado.edu source
+#logKaHNO3=1.52
+#logKaHNO2=-3.47
+#logKaNH4=-10.0
+
+
+#T=18 deg C
+#logK4=222.72
+#logK8=161.0
+#logK12=162.30
+#logK14=101.66
+#logK15=40.36
+#H_NH3=85.0
+#H_N2=.00072118
+#H_N2O=.02872565
+#H_NO=0.00216659        #from site.colorado.edu source
+#logKaHNO3=1.37
+#logKaHNO2=-3.29
+#logKaNH4=-9.46
+
+#T=25 deg C
+#logK4=222.63
+#logK8=160.94
+#logK12=162.11
+#logK14=101.60
+#logK15=40.31
+#H_NH3=60.7
+#H_N2=.00064601
+#H_N2O=.02320822
+#H_NO=0.00191709        #from site.colorado.edu source
+#logKaHNO3=1.3
+#logKaHNO2=-3.23
+#logKaNH4=-9.24
+
+#T=37 deg C
+#logK4=222.50
+#logK8=160.86
+#logK12=161.73
+#logK14=101.46
+#logK15=40.19
+#H_NH3=35.4
+#H_N2=.000555781
+#H_N2O=.01688052
+#H_NO=0.00161919         #from site.colorado.edu source
+#logKaHNO3=1.18
+#logKaHNO2=-3.13
+#logKaNH4=-8.9
+
+#T=45 deg C
+#logK4=222.40
+#logK8=160.81
+#logK12=161.43
+#logK14=101.33
+#logK15=40.08
+#H_NH3=25.2
+#H_N2=.00051928
+#H_N2O=.01406652
+#H_NO=0.00148442        #from site.colorado.edu source
+#logKaHNO3=1.1
+#logKaHNO2=-3.08
+#logKaNH4=-8.67
+
+
+
+#Henry's law constants in M/bar - ORIGINAL
+H_HNO3=2.6E6     #ASSUME THAT H_HNO3 and H_HNO2 DON'T CHANGE WITH TEMPERATURE B/C CAN'T FIND THEIR PARAMETERS, AND THESE SPECIES ARE NEGLIGIBLE ANYWAY
 H_HNO2=50.
 H_NO=1.9E-3
 H_N2O=2.5E-2
 H_N2=6.4E-4
 H_NH3=60.
 
-#Ka's for relevant acid/base partitioning pairs (pKa = - log(Ka))
+#Ka's for relevant acid/base partitioning pairs (pKa = - log(Ka)) - ORIGINAL
 logKaHNO3=1.3
 logKaHNO2=-3.4
 logKaNH4=-9.24
@@ -266,74 +341,136 @@ for i in np.arange(0, len(H2arr)):
 		N_oxidation[i,j,3]=2.*(V*(conc_N2O) + ((p_N2O)/(mu*g))*(4*np.pi*Rearth**2.)*(1./Na)) #N2O (+1)
 		N_oxidation[i,j,4]=2.*(V*(conc_N2) + ((p_N2)/(mu*g))*(4*np.pi*Rearth**2.)*(1./Na)) #N2 (+0)
 		N_oxidation[i,j,5]=V*(conc_NH3 + conc_NH4) + ((p_NH3)/(mu*g))*(4*np.pi*Rearth**2.)*(1./Na) #NH3 (-3)
+    
+        N_aq[i,j,0]=V*(conc_NO3 + conc_HNO3)
+#print(i)
+#       print(j)
+
+        N_aq[i,j,1]=V*(conc_NO2 + conc_HNO2)
+
+#print('HERE FUCKER')
+#print(N_aq[:,:,0])
+
+
+#print('NO3')
+
+#print('NO2')
+#print(N_aq[*,*,1])
 
         #Put into matrix with aqueous and gaseous species separately
-        N_gas[i,j,0]=((p_HNO3)/(mu*g))*(4*np.pi*Rearth**2.)*(1./Na)  #NO3-
-        N_gas[i,j,1]=((p_HNO2)/(mu*g))*(4*np.pi*Rearth**2.)*(1./Na) #NO2- (+3)
-        N_gas[i,j,2]=((p_NO)/(mu*g))*(4*np.pi*Rearth**2.)*(1./Na) #NO (+2)
-        N_gas[i,j,3]=2.*((p_N2O)/(mu*g))*(4*np.pi*Rearth**2.)*(1./Na) #N2O (+1)
-        N_gas[i,j,4]=2.*((p_N2)/(mu*g))*(4*np.pi*Rearth**2.)*(1./Na) #N2 (+0)
-        N_gas[i,j,5]=((p_NH3)/(mu*g))*(4*np.pi*Rearth**2.)*(1./Na) #NH3 (-3)
+#N_gas[i,j,0]=((p_HNO3)/(mu*g))*(4*np.pi*Rearth**2.)*(1./Na)  #NO3-
+#N_gas[i,j,1]=((p_HNO2)/(mu*g))*(4*np.pi*Rearth**2.)*(1./Na) #NO2- (+3)
+#N_gas[i,j,2]=((p_NO)/(mu*g))*(4*np.pi*Rearth**2.)*(1./Na) #NO (+2)
+#N_gas[i,j,3]=2.*((p_N2O)/(mu*g))*(4*np.pi*Rearth**2.)*(1./Na) #N2O (+1)
+#N_gas[i,j,4]=2.*((p_N2)/(mu*g))*(4*np.pi*Rearth**2.)*(1./Na) #N2 (+0)
+#N_gas[i,j,5]=((p_NH3)/(mu*g))*(4*np.pi*Rearth**2.)*(1./Na) #NH3 (-3)
 
 
 
-        N_aq[i,j,0]=V*(conc_NO3 + conc_HNO3)
-        N_aq[i,j,1]=V*(conc_NO2 + conc_HNO2)
-        N_aq[i,j,2]=V*(conc_NO)
-        N_aq[i,j,3]=2.*(V*(conc_N2O))
-        N_aq[i,j,4]=2.*(V*(conc_N2))
-        N_aq[i,j,5]=V*(conc_NH3 + conc_NH4)
+#N_aq[i,j,0]=V*(conc_NO3 + conc_HNO3)
+# N_aq[i,j,1]=V*(conc_NO2 + conc_HNO2)
+#N_aq[i,j,2]=V*(conc_NO)
+#N_aq[i,j,3]=2.*(V*(conc_N2O))
+# N_aq[i,j,4]=2.*(V*(conc_N2))
+# N_aq[i,j,5]=V*(conc_NH3 + conc_NH4)
 
-
-
+#print('HERE LOSER')
+#print(N_aq)
+#print('END LOSER')
 
 
 N_oxidation_norm=N_oxidation/totmole #normalize by total number of moles.
 
-N_gas_norm=N_gas/totmole
+#N_gas_norm=N_gas/totmole
 N_aq_norm=N_aq/totmole
 
-print np.sum(N_gas_norm, axis=2)
-print np.sum(N_aq_norm, axis=2)
+#print np.sum(N_gas_norm, axis=2)
+#print np.sum(N_aq_norm, axis=2)
 
 #print(N_aq_norm)
 
-print np.sum(N_oxidation_norm, axis=2) # CHECKSUM: should be 1 uniformly
+#print np.sum(N_oxidation_norm, axis=2) # CHECKSUM: should be 1 uniformly
 
-###############
-###Plot - NEW ATTEMPT WITH GAS AND AQ
-###############
-fig, ax=plt.subplots(len(H2arr), figsize=(8.5, 10.0), sharex=True, sharey=True)
+pH=np.array([2,4,6,8,10,12])
+NO3_1=np.array([1.28E-128,1.28E-124,1.28E-120,1.21E-116,1.89E-113,2.21E-111])
+NO2_1=np.array([7.18E-98,7.18E-94,7.17E-90,6.79E-86,1.06E-82,1.24E-80])
 
-width=0.2
-for i in np.arange(0, len(H2arr)):
-    H2=H2arr[i]
-    ax[i].set_title('[H2]=' + str(H2))
-    #	pdb.set_trace
-    ax[i].bar(pHarr, N_aq_norm[i,:,0], color='violet', label='N(+5)')
-    ax[i].bar(pHarr, N_gas_norm[i,:,0], color='violet', alpha=.5, hatch='/',bottom=N_aq_norm[i,:,0])
-    ax[i].bar(pHarr, N_aq_norm[i,:,1], color='blue', label='N(+3)',bottom=N_aq_norm[i,:,0]+N_gas_norm[i,:,0])
-    ax[i].bar(pHarr, N_gas_norm[i,:,1], color='blue', alpha=.5, hatch='/',bottom=N_aq_norm[i,:,0]+N_gas_norm[i,:,0]+N_aq_norm[i,:,1])
-    ax[i].bar(pHarr, N_aq_norm[i,:,2], color='green', label='N(+2)',bottom=N_aq_norm[i,:,0]+N_gas_norm[i,:,0]+N_aq_norm[i,:,1]+N_gas_norm[i,:,1])
-    ax[i].bar(pHarr, N_gas_norm[i,:,2], color='green', alpha=.5, hatch='/',bottom=N_aq_norm[i,:,0]+N_gas_norm[i,:,0]+N_aq_norm[i,:,1]+N_gas_norm[i,:,1]+N_aq_norm[i,:,2])
-    ax[i].bar(pHarr, N_aq_norm[i,:,3], color='yellow', label='N(+1)',bottom=N_aq_norm[i,:,0]+N_gas_norm[i,:,0]+N_aq_norm[i,:,1]+N_gas_norm[i,:,1]+N_aq_norm[i,:,2]+N_gas_norm[i,:,2])
-    ax[i].bar(pHarr, N_gas_norm[i,:,3], color='yellow', alpha=.5,hatch='/',bottom=N_aq_norm[i,:,0]+N_gas_norm[i,:,0]+N_aq_norm[i,:,1]+N_gas_norm[i,:,1]+N_aq_norm[i,:,2]+N_gas_norm[i,:,2]+N_aq_norm[i,:,3])
-    ax[i].bar(pHarr, N_aq_norm[i,:,4], color='orange', label='N(+0)',bottom=N_aq_norm[i,:,0]+N_gas_norm[i,:,0]+N_aq_norm[i,:,1]+N_gas_norm[i,:,1]+N_aq_norm[i,:,2]+N_gas_norm[i,:,2]+N_aq_norm[i,:,3]+N_gas_norm[i,:,3])
-    ax[i].bar(pHarr, N_gas_norm[i,:,4], color='orange', alpha=.5, hatch='/',bottom=N_aq_norm[i,:,0]+N_gas_norm[i,:,0]+N_aq_norm[i,:,1]+N_gas_norm[i,:,1]+N_aq_norm[i,:,2]+N_gas_norm[i,:,2]+N_aq_norm[i,:,3]+N_gas_norm[i,:,3]+N_aq_norm[i,:,4])
-    ax[i].bar(pHarr, N_aq_norm[i,:,5], color='red', label='N(-3)',bottom=N_aq_norm[i,:,0]+N_gas_norm[i,:,0]+N_aq_norm[i,:,1]+N_gas_norm[i,:,1]+N_aq_norm[i,:,2]+N_gas_norm[i,:,2]+N_aq_norm[i,:,3]+N_gas_norm[i,:,3]+N_aq_norm[i,:,4]+N_gas_norm[i,:,4])
-    ax[i].bar(pHarr, N_gas_norm[i,:,5], color='red', alpha=.5, hatch='/',bottom=N_aq_norm[i,:,0]+N_gas_norm[i,:,0]+N_aq_norm[i,:,1]+N_gas_norm[i,:,1]+N_aq_norm[i,:,2]+N_gas_norm[i,:,2]+N_aq_norm[i,:,3]+N_gas_norm[i,:,3]+N_aq_norm[i,:,4]+N_gas_norm[i,:,4]+N_aq_norm[i,:,5])
-    
-    ax[i].set_ylabel('Mole Fraction',fontsize=16)
+NO3_n2=np.array([1.28E-120,1.28E-116,1.28E-112,1.21E-108,1.89E-105,2.21E-103])
+NO2_n2=np.array([7.18E-92,7.18E-88,7.17E-84,6.79E-80,1.06E-76,1.24E-74])
 
-ax[0].legend(bbox_to_anchor=[-0.08, 1.25, 1.08, .152],loc='lower left', ncol=3, mode='expand', borderaxespad=0., fontsize=16)
-plt.tight_layout(rect=(0,0.1,1,0.90))
-ax[-1].set_ylim([0,1])
-ax[-1].set_xlabel('pH',fontsize=16)
-#plt.savefig('./Plots/nox_thermo_sr.pdf', orientation='portrait',papertype='letter', format='pdf')
+NO3_n5=np.array([1.28E-108,1.28E-104,1.28E-100,1.21E-96,1.89E-93,2.21E-91])
+NO2_n5=np.array([7.18E-83,7.18E-79,7.17E-75,6.79E-71,1.06E-67,1.24E-65])
+
+
+NO3_n10=np.array([1.28E-88,9.45E-85,1.84E-82,1.85E-80,1.85E-78,1.85E-76])
+NO2_n10=np.array([7.18E-68,5.31E-64,1.03E-61,1.04E-59,1.04E-57,1.04E-55])
+
+NO3_n15=np.array([5.86E-74,5.86E-72,5.86E-70,5.86E-68,5.86E-66,5.86E-64])
+NO2_n15=np.array([3.30E-58,3.30E-56,3.30E-54,3.30E-52,3.30E-50,3.30E-48])
+
+NO3_n20=np.array([1.85E-61,1.85E-59,1.85E-57,1.85E-55,1.85E-53,1.85E-51])
+NO2_n20=np.array([1.04E-50,1.04E-48,1.04E-46,1.04E-44,1.04E-42,1.04E-40])
+
+fig=plt.figure()
+ax1=fig.add_subplot(321)
+ax1.plot(pH,NO3_1,marker='o',ls='none',color='violet',label='NO3-',markersize=15)
+ax1.plot(pH,NO2_1,marker='o',ls='none',color='blue',label='NO2-',markersize=15)
+ax1.legend(loc='best')
+ax1.set_title('[H2]=1.0')
+ax1.set_ylabel('Conc (M)',fontsize=16)
+ax1.set_yscale('log')
+ax1.set_xlim(1,13)
+
+ax2=fig.add_subplot(323,sharex=ax1)
+ax2.plot(pH,NO3_n2,marker='o',ls='none',color='violet',label='NO3-',markersize=15)
+ax2.plot(pH,NO2_n2,marker='o',ls='none',color='blue',label='NO2-',markersize=15)
+ax2.set_title('[H2]=0.01')
+ax2.set_ylabel('Conc (M)',fontsize=16)
+ax2.set_yscale('log')
+ax2.set_xlim(1,13)
+
+ax3=fig.add_subplot(325,sharex=ax1)
+ax3.plot(pH,NO3_n5,marker='o',ls='none',color='violet',label='NO3-',markersize=15)
+ax3.plot(pH,NO2_n5,marker='o',ls='none',color='blue',label='NO2-',markersize=15)
+ax3.set_title('[H2]=1e-05')
+ax3.set_ylabel('Conc (M)',fontsize=16)
+ax3.set_yscale('log')
+ax3.set_xlabel('pH',fontsize=16)
+ax3.set_xlim(1,13)
+
+
+ax4=fig.add_subplot(322,sharex=ax1)
+ax4.plot(pH,NO3_n10,marker='o',ls='none',color='violet',label='NO3-',markersize=15)
+ax4.plot(pH,NO2_n10,marker='o',ls='none',color='blue',label='NO2-',markersize=15)
+ax4.set_title('[H2]=1e-10')
+ax4.set_ylabel('Conc (M)',fontsize=16)
+ax4.set_yscale('log')
+ax4.set_xlim(1,13)
+
+ax5=fig.add_subplot(324,sharex=ax1)
+ax5.plot(pH,NO3_n15,marker='o',ls='none',color='violet',label='NO3-',markersize=15)
+ax5.plot(pH,NO2_n15,marker='o',ls='none',color='blue',label='NO2-',markersize=15)
+ax5.set_title('[H2]=1e-15')
+ax5.set_ylabel('Conc (M)',fontsize=16)
+ax5.set_yscale('log')
+ax5.set_xlim(1,13)
+
+
+ax6=fig.add_subplot(326,sharex=ax1)
+ax6.plot(pH,NO3_n20,marker='o',ls='none',color='violet',label='NO3-',markersize=15)
+ax6.plot(pH,NO2_n20,marker='o',ls='none',color='blue',label='NO2-',markersize=15)
+ax6.set_title('[H2]=1e-20')
+ax6.set_ylabel('Conc (M)',fontsize=16)
+ax6.set_yscale('log')
+ax6.set_xlabel('pH',fontsize=16)
+ax6.set_xlim(1,13)
+
+
+plt.subplots_adjust(hspace=.3,wspace=.3)
+
+
 plt.show()
 plt.close()
-
-
 
 
 
@@ -355,9 +492,11 @@ for i in np.arange(0, len(H2arr)):
     ax[i].bar(pHarr, N_oxidation_norm[i,:,4], color='orange', label='N(+0)', bottom=N_oxidation_norm[i,:,3]+N_oxidation_norm[i,:,2]+N_oxidation_norm[i,:,1]+N_oxidation_norm[i,:,0])
     ax[i].bar(pHarr, N_oxidation_norm[i,:,5], color='red', label='N(-3)', bottom=N_oxidation_norm[i,:,4]+N_oxidation_norm[i,:,3]+N_oxidation_norm[i,:,2]+N_oxidation_norm[i,:,1]+N_oxidation_norm[i,:,0])
         
-    ax[i].set_ylabel('Mole Fraction',fontsize=16)
+    #ax[i].set_ylabel('Mole Fraction',fontsize=16)
 
-ax[0].legend(bbox_to_anchor=[-0.08, 1.25, 1.08, .152],loc='lower left', ncol=3, mode='expand', borderaxespad=0., fontsize=16)
+ax[3].set_ylabel('Mole Fraction',fontsize=16)
+ax[0].legend(bbox_to_anchor=[-0.08, 1.6, 1.08, .152],loc='lower left', ncol=3, mode='expand', borderaxespad=0., fontsize=16)
+#ax[0].legend(bbox_to_anchor=[-0.08, 1.25, 1.08, .152],loc='lower left', ncol=3, mode='expand', borderaxespad=0., fontsize=16)
 plt.tight_layout(rect=(0,0.1,1,0.90))
 ax[-1].set_ylim([0,1])
 ax[-1].set_xlabel('pH',fontsize=16)
@@ -365,6 +504,61 @@ ax[-1].set_xlabel('pH',fontsize=16)
 plt.show()
 plt.close()
 
+
+
+
+
+####ONLY CASE THAT IS NOTABLY TEMPERATURE DEPENDENT: pH 4, H2=1E-10
+
+#print('N(-3)')
+#print(N_oxidation_norm[3,:,5])
+#print('N(0)')
+#print(N_oxidation_norm[3,:,4])
+
+#T=2 deg C
+#N(-3)
+#[  9.99952565e-01   7.40131254e-01   1.44219870e-02   1.53548866e-04 9.82498966e-06   8.38764657e-06]
+#N(0)
+#[  4.74351561e-05   2.59868791e-01   9.85578013e-01   9.99846451e-01 9.99990175e-01   9.99991612e-01]
+
+#T=18 deg C
+#N(-3)
+#[  9.99952561e-01   7.39373711e-01   1.37773939e-02   1.46638535e-04 9.38279436e-06   8.01014180e-06]
+#N(0)
+#[  4.74396350e-05   2.60626289e-01   9.86222606e-01   9.99853361e-01 9.99990617e-01   9.99991990e-01]
+
+#T=25 deg C
+#N(-3)
+#[  9.99952561e-01   7.07697732e-01   1.30117464e-02   1.38436272e-04 8.85793139e-06   7.56206318e-06]
+#N(0)
+#[  4.74396350e-05   2.92302265e-01   9.86988254e-01   9.99861564e-01 9.99991142e-01   9.99992438e-01]
+
+#T=37 deg C
+#N(-3)
+#[  9.99952561e-01   6.62409705e-01   1.13423375e-02   1.20574029e-04 7.71494013e-06   6.58628491e-06]
+#N(0)
+#[  4.74396350e-05   3.37590294e-01   9.88657663e-01   9.99879426e-01 9.99992285e-01   9.99993414e-01]
+
+#T=45 deg C
+#N(-3)
+#[  9.99952561e-01   6.19553258e-01   9.99993573e-03   1.06232375e-04 6.79724243e-06   5.80284117e-06]
+#N(0)
+#[  4.74396350e-05   3.80446742e-01   9.90000064e-01   9.99893768e-01 9.99993203e-01   9.99994197e-01]
+
+T=np.array([2,18,25,37,45])
+NH4=np.array([7.40131254e-01,7.39373711e-01,7.07697732e-01,6.62409705e-01,6.19553258e-01])
+N2=np.array([2.59868791e-01,2.60626289e-01,2.92302265e-01,3.37590294e-01,3.80446742e-01])
+
+plt.figure()
+plt.plot(T,NH4,marker='o',ls='-',color='r',label='N(-3)',linewidth=2,markersize=10)
+plt.plot(T,N2,marker='o',ls='-',color='orange',label='N(0)',linewidth=2,markersize=10)
+plt.xlabel('Temperature ($^o C$)',fontsize=16)
+plt.ylabel('Mole Fraction',fontsize=16)
+plt.tick_params(which='both',labelsize=14,pad=5)
+plt.legend(loc='best')
+plt.xlim(0,47)
+plt.show()
+plt.close()
 
 
 

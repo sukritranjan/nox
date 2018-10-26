@@ -128,9 +128,9 @@ H_N2=6.4E-4
 H_NH3=60.
 
 #Ka's for relevant acid/base partitioning pairs (pKa = - log(Ka)) - ORIGINAL
-logKaHNO3=1.3
-logKaHNO2=-3.4
-logKaNH4=-9.24
+logKaHNO3=1.38     #From CRC (note that these differ slightly from calculated values in sensitivity analysis)
+logKaHNO2=-3.25
+logKaNH4=-9.25
 
 ###############
 ###Derived quantities
@@ -485,12 +485,12 @@ for i in np.arange(0, len(H2arr)):
     H2=H2arr[i]
     ax[i].set_title('[H2]=' + str(H2))
     #	pdb.set_trace
-    ax[i].bar(pHarr, N_oxidation_norm[i,:,0], color='violet', label='N(+5)')
-    ax[i].bar(pHarr, N_oxidation_norm[i,:,1], color='blue', label='N(+3)', bottom=N_oxidation_norm[i,:,0])
-    ax[i].bar(pHarr, N_oxidation_norm[i,:,2], color='green', label='N(+2)', bottom=N_oxidation_norm[i,:,1]+N_oxidation_norm[i,:,0])
-    ax[i].bar(pHarr, N_oxidation_norm[i,:,3], color='yellow', label='N(+1)', bottom=N_oxidation_norm[i,:,2]+N_oxidation_norm[i,:,1]+N_oxidation_norm[i,:,0])
-    ax[i].bar(pHarr, N_oxidation_norm[i,:,4], color='orange', label='N(+0)', bottom=N_oxidation_norm[i,:,3]+N_oxidation_norm[i,:,2]+N_oxidation_norm[i,:,1]+N_oxidation_norm[i,:,0])
-    ax[i].bar(pHarr, N_oxidation_norm[i,:,5], color='red', label='N(-3)', bottom=N_oxidation_norm[i,:,4]+N_oxidation_norm[i,:,3]+N_oxidation_norm[i,:,2]+N_oxidation_norm[i,:,1]+N_oxidation_norm[i,:,0])
+    ax[i].bar(pHarr, N_oxidation_norm[i,:,0], color='violet', label='N(V)')
+    ax[i].bar(pHarr, N_oxidation_norm[i,:,1], color='blue', label='N(III)', bottom=N_oxidation_norm[i,:,0])
+    ax[i].bar(pHarr, N_oxidation_norm[i,:,2], color='green', label='N(II)', bottom=N_oxidation_norm[i,:,1]+N_oxidation_norm[i,:,0])
+    ax[i].bar(pHarr, N_oxidation_norm[i,:,3], color='yellow', label='N(I)', bottom=N_oxidation_norm[i,:,2]+N_oxidation_norm[i,:,1]+N_oxidation_norm[i,:,0])
+    ax[i].bar(pHarr, N_oxidation_norm[i,:,4], color='orange', label='N(0)', bottom=N_oxidation_norm[i,:,3]+N_oxidation_norm[i,:,2]+N_oxidation_norm[i,:,1]+N_oxidation_norm[i,:,0])
+    ax[i].bar(pHarr, N_oxidation_norm[i,:,5], color='red', label='N(-III)', bottom=N_oxidation_norm[i,:,4]+N_oxidation_norm[i,:,3]+N_oxidation_norm[i,:,2]+N_oxidation_norm[i,:,1]+N_oxidation_norm[i,:,0])
         
     #ax[i].set_ylabel('Mole Fraction',fontsize=16)
 
